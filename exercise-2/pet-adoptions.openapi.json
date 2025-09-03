@@ -1,0 +1,133 @@
+{
+    "openapi": "3.0.4",
+    "info": {
+        "title": "Pet Adoption API",
+        "version": "1.0.0",
+        "description": "API for retrieving pet details for potential adopters."
+    },
+    "servers": [
+        {
+            "url": "https://api.petadoption.com/v1"
+        }
+    ],
+    "paths": {
+        "/pets/{petId}": {
+            "get": {
+                "operationId": "getPetDetails",
+                "summary": "Retrieve full details of a pet",
+                "description": "Returns the full record of a pet based on the provided petId.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/petId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with pet details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pet"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "id": "92b68c58-25ea-4f4e-a17b-c145c82e394a",
+                                            "name": "Buddy",
+                                            "category": "Dog",
+                                            "breed": "Golden Retriever",
+                                            "location": "Shelter A",
+                                            "status": "Available",
+                                            "description": "Friendly and energetic dog.",
+                                            "tags": [
+                                                "friendly",
+                                                "energetic"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "petId": {
+                "name": "petId",
+                "in": "path",
+                "required": true,
+                "description": "The unique identifier for the pet (UUID format).",
+                "schema": {
+                    "type": "string",
+                    "example": "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                }
+            }
+        },
+        "schemas": {
+            "Pet": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "The unique identifier for the pet.",
+                        "example": "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the pet.",
+                        "example": "Buddy"
+                    },
+                    "category": {
+                        "type": "string",
+                        "description": "The category of the pet (e.g., Dog, Cat).",
+                        "example": "Dog"
+                    },
+                    "breed": {
+                        "type": "string",
+                        "description": "The breed of the pet.",
+                        "example": "Golden Retriever"
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "The location of the pet.",
+                        "example": "Shelter A"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "The adoption status of the pet.",
+                        "example": "Available"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A brief description of the pet.",
+                        "example": "Friendly and energetic dog."
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Tags associated with the pet.",
+                        "example": [
+                            "friendly",
+                            "energetic"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

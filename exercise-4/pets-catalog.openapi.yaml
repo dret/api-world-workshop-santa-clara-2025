@@ -1,0 +1,358 @@
+openapi: 3.0.4
+info:
+  title: Pets Catalog API
+  description: API for searching, viewing, adding, and updating pets in the catalog.
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/frank-kilcommins/Pets-Catalog-API/1.0.0
+  - url: https://api.petscatalog.com/v1
+paths:
+  /pets:
+    get:
+      summary: Search for pets
+      operationId: searchPets
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Category'
+        - $ref: '#/components/parameters/Location'
+        - $ref: '#/components/parameters/Breed'
+      responses:
+        '200':
+          description: A paged array of pet summaries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PetSummary'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              examples:
+                allAvailablePets:
+                  summary: All available pets
+                  value:
+                    pets:
+                      - id: "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                        name: "Buddy"
+                        status: "available"
+                        category: "dog"
+                        breed: "boxer"
+                        location: "Galway"
+                    pagination:
+                      page: 1
+                      limit: 10
+                      totalPages: 5
+                      totalItems: 50
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+        '503':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServiceUnavailable'
+    post:
+      summary: Add a new pet
+      operationId: addPet
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+            examples:
+              validPet:
+                summary: Valid pet
+                value:
+                  name: "Buddy"
+                  category: "dog"
+                  breed: "boxer"
+                  location: "Galway"
+      responses:
+        '201':
+          description: Pet created successfully
+          headers:
+            Location:
+              description: URL of the created pet
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+              examples:
+                createdPet:
+                  summary: Created pet
+                  value:
+                    id: "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                    name: "Buddy"
+                    status: "available"
+                    category: "dog"
+                    breed: "boxer"
+                    location: "Galway"
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/Unauthorized'
+        '422':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ValidationError'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+        '503':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServiceUnavailable'
+  /pets/{petId}:
+    get:
+      summary: Get pet details
+      operationId: getPetDetails
+      parameters:
+        - $ref: '#/components/parameters/PetId'
+      responses:
+        '200':
+          description: Full pet details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+              examples:
+                petDetails:
+                  summary: Pet details
+                  value:
+                    id: "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                    name: "Buddy"
+                    status: "available"
+                    category: "dog"
+                    breed: "boxer"
+                    location: "Galway"
+                    description: "Friendly and energetic"
+                    tags: ["playful", "friendly"]
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest'
+        '404':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/NotFound'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+        '503':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServiceUnavailable'
+    patch:
+      summary: Update pet details
+      operationId: updatePet
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PetId'
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  op:
+                    type: string
+                    enum: [replace]
+                  path:
+                    type: string
+                    enum: ["/name", "/breed", "/location", "/status"]
+                  value:
+                    type: string
+            examples:
+              updateBreed:
+                summary: Update breed
+                value:
+                  - op: replace
+                    path: "/breed"
+                    value: "labrador"
+      responses:
+        '200':
+          description: Pet updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+              examples:
+                updatedPet:
+                  summary: Updated pet
+                  value:
+                    id: "92b68c58-25ea-4f4e-a17b-c145c82e394a"
+                    name: "Buddy"
+                    status: "available"
+                    category: "dog"
+                    breed: "labrador"
+                    location: "Galway"
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/Unauthorized'
+        '404':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/NotFound'
+        '422':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ValidationError'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+        '503':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServiceUnavailable'
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number for pagination
+      required: false
+      schema:
+        type: integer
+        example: 1
+    Limit:
+      name: limit
+      in: query
+      description: Number of items per page
+      required: false
+      schema:
+        type: integer
+        example: 10
+    Status:
+      name: status
+      in: query
+      description: Filter pets by status
+      required: false
+      schema:
+        type: string
+        enum: [available, adopted, pending]
+        example: available
+    Category:
+      name: category
+      in: query
+      description: Filter pets by category
+      required: false
+      schema:
+        type: string
+        example: dog
+    Location:
+      name: location
+      in: query
+      description: Filter pets by location
+      required: false
+      schema:
+        type: string
+        example: Galway
+    Breed:
+      name: breed
+      in: query
+      description: Filter pets by breed
+      required: false
+      schema:
+        type: string
+        example: boxer
+    PetId:
+      name: petId
+      in: path
+      description: Unique identifier for the pet
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 92b68c58-25ea-4f4e-a17b-c145c82e394a
+  schemas:
+    PetSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the pet
+        name:
+          type: string
+          description: Name of the pet
+        status:
+          type: string
+          description: Current status of the pet
+          enum: [available, adopted, pending]
+        category:
+          type: string
+          description: Category of the pet
+        breed:
+          type: string
+          description: Breed of the pet
+        location:
+          type: string
+          description: Location of the pet
+    Pet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the pet
+        name:
+          type: string
+          description: Name of the pet
+        status:
+          type: string
+          description: Current status of the pet
+          enum: [available, adopted, pending]
+        category:
+          type: string
+          description: Category of the pet
+        breed:
+          type: string
+          description: Breed of the pet
+        location:
+          type: string
+          description: Location of the pet
+        description:
+          type: string
+          description: Detailed description of the pet
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the pet
+    NewPet:
+      type: object
+      required:
+        - name
+        - category
+        - breed
+        - location
+      properties:
+        name:
+          type: string
+          description: Name of the pet
+        category:
+          type: string
+          description: Category of the pet
+        breed:
+          type: string
+          description: Breed of the pet
+        location:
+          type: string
+          description: Location of the pet
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Number of items per page
+        totalPages:
+          type: integer
+          description: Total number of pages
+        totalItems:
+          type: integer
+          description: Total number of items
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
