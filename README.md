@@ -2,11 +2,41 @@
 
 This repo contains _exercises_ and _materials_ for the **"API Management in Practice: Delivering at Scale with OpenAPI and Arazzo"** Workshop at API World 2025 Conference in Santa Clara.
 
-## Courses and Slides
+## Schedule
 
-The courses and slides presented during the workshop are available at [http://dret.net/lectures/api-world-2025/](http://dret.net/lectures/api-world-2025/).
+### 12:00-1:50: Part I
 
-For reference, the following courses make up the day long workshop:
+- 12.00-12.20: [Workshop Introduction](http://dret.net/lectures/api-world-2025/workshop-introduction)
+- 12.20-12.50: [Introduction to APIs and API Descriptions](http://dret.net/lectures/api-world-2025/workshop-api-description)
+- 12.50-1.20: [Capturing API Requirements using Example Mapping](http://dret.net/lectures/api-world-2025/workshop-api-requirements-example-mapping)
+- 1.20-1.50: [Exercise 1](./exercise-1)
+
+
+### 2:00-3:50: Part II
+
+- 2.00-2.30: [Introduction to OpenAPI](http://dret.net/lectures/api-world-2025/workshop-openapi-introduction)
+- 2.30-3.00: [The Art of Good API Documentation](http://dret.net/lectures/api-world-2025/workshop-api-documentation)
+- 3.00-3.30: [Exercise 2](./exercise-2)
+- 3.30-3.50: [API Design and OpenAPI Linting](http://dret.net/lectures/api-world-2025/workshop-design-linting)
+
+
+### 4:20-6:00: Part III
+
+- 4.20-4.45: [Exercise 3](./exercise-3)
+- 4.45-5.05: [Introduction to API Mocking](http://dret.net/lectures/api-world-2025/workshop-mocking)
+- 5.05-5.15: [Exercise 4](./exercise-4)
+- 5.15-5.45: [Introduction to Arazzo](http://dret.net/lectures/api-world-2025/workshop-arazzo)
+- 5.45-6.00: Certificates & Wrap-up
+
+
+### 6:00: End of Workshop
+
+
+## Slides
+
+The slides presented during the workshop are available at [http://dret.net/lectures/api-world-2025/](http://dret.net/lectures/api-world-2025/).
+
+For reference, the following parts make up the workshop:
 
 - [Workshop Introduction](http://dret.net/lectures/api-world-2025/workshop-introduction)
 - [Introduction to APIs and OpenAPI](http://dret.net/lectures/api-world-2025/workshop-api-description)
@@ -54,7 +84,7 @@ Tooling of your choice:
 
 Expected output is an OpenAPI Description in either YAML or JSON format!
 
-he expected and/or sample outputs are available in the [exercise-2](./exercise-2/) folder.
+The expected and/or sample outputs are available in the [exercise-2](./exercise-2/) folder.
 
 ### Exercise 3
 
