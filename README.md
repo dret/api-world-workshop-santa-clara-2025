@@ -11,11 +11,11 @@ For reference, the following courses make up the day long workshop:
 - [Workshop Introduction](http://dret.net/lectures/api-world-2025/workshop-introduction)
 - [Introduction to APIs and OpenAPI](http://dret.net/lectures/api-world-2025/workshop-api-description)
 - [API Requirements and Example Mapping](http://dret.net/lectures/api-world-2025/workshop-api-requirements-example-mapping)
-- [Introduction to OpenAPI](http://dret-lectures/api-world-2025/workshop-openapi-introduction)
-- [The Art of Good API Documentation](http://dret-lectures/api-world-2025/workshop-api-documentation)
-- [API Design and OpenAPI Linting](http://dret-lectures/api-world-2025/workshop-design-linting)
-- [Intro to API Mocking](http://api-world-2025/workshop-api-mocking)
-- [Intro to the Arazzo Specification](http://dret-lectures/api-world-2025/workshop-arazzo)
+- [Introduction to OpenAPI](http://dret.net/lectures/api-world-2025/workshop-openapi-introduction)
+- [The Art of Good API Documentation](http://dret.net/lectures/api-world-2025/workshop-api-documentation)
+- [API Design and OpenAPI Linting](http://dret.net/lectures/api-world-2025/workshop-design-linting)
+- [Intro to API Mocking](http://dret.net/lectures/api-world-2025/workshop-api-mocking)
+- [Intro to the Arazzo Specification](http://dret.net/lectures/api-world-2025/workshop-arazzo)
 
 ## Tools
 
