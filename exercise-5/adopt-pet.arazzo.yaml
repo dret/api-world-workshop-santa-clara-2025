@@ -1,0 +1,86 @@
+arazzo: 1.0.1
+info:
+  title: Adopt Pet Matching Criteria
+  version: 1.0.0
+  description: >
+    A workflow that allows users to search for adoptable pets matching certain criteria,
+    initiate an adoption request, confirm the adoption by updating the pet's status,
+    and verify the updated status of the pet.
+sourceDescriptions:
+  - name: PetsAPI
+    url: https://api.swaggerhub.com/apis/frank-kilcommins/Pets-Catalog-API/1.0.0/swagger.json
+    type: openapi
+  - name: AdoptionsAPI
+    url: https://api.swaggerhub.com/apis/frank-kilcommins/Adoptions-API/1.0.0/swagger.json
+    type: openapi
+workflows:
+  - workflowId: adoptPetByCriteria
+    summary: Adopt a pet using specific search criteria.
+    description: |
+      This workflow searches for a pet using criteria like breed and status,
+      initiates an adoption request, updates the status to 'adopted',
+      and finally verifies the status.
+    inputs:
+      type: object
+      properties:
+        breed:
+          type: string
+        status:
+          type: string
+    steps:
+      - stepId: searchPets
+        description: Search for pets matching user criteria.
+        operationId: $sourceDescriptions.PetsAPI.searchPets
+        parameters:
+          - name: breed
+            in: query
+            value: $inputs.breed
+          - name: status
+            in: query
+            value: $inputs.status
+        successCriteria:
+          - condition: $statusCode == 200
+        outputs:
+          petId: $response.body#/0/id
+
+      - stepId: initiateAdoption
+        description: Begin adoption for selected pet.
+        operationId: $sourceDescriptions.AdoptionsAPI.adoptPet
+        requestBody:
+          contentType: application/json
+          payload:
+            petId: $steps.searchPets.outputs.petId
+        successCriteria:
+          - condition: $statusCode == 201
+        outputs:
+          adoptionId: $response.body#/adoptionId
+
+      - stepId: updatePetStatus
+        description: Update the pet status to 'adopted'.
+        operationId: $sourceDescriptions.PetsAPI.updatePet
+        parameters:
+          - name: petId
+            in: path
+            value: $steps.searchPets.outputs.petId
+        requestBody:
+          contentType: application/json
+          payload:
+            status: adopted
+        successCriteria:
+          - condition: $statusCode == 200
+
+      - stepId: confirmPetAdopted
+        description: Retrieve the pet to confirm status is now 'adopted'.
+        operationId: $sourceDescriptions.PetsAPI.getPetDetails
+        parameters:
+          - name: petId
+            in: path
+            value: $steps.searchPets.outputs.petId
+        successCriteria:
+          - condition: $statusCode == 200
+          - context: $response.body
+            condition: $.status == 'adopted'
+            type: jsonpath
+    outputs:
+      adoptedPetId: $steps.searchPets.outputs.petId
+      adoptionId: $steps.initiateAdoption.outputs.adoptionId

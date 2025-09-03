@@ -1,0 +1,182 @@
+openapi: 3.0.4
+info:
+  title: Pet Adoption API
+  description: API for managing pet adoptions by registered users.
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/frank-kilcommins/Adoptions-API/1.0.0
+  - url: https://api.example.com/v1
+    description: Production server
+paths:
+  /adoptions:
+    get:
+      summary: Retrieve a list of adoptions
+      operationId: getAdoptions
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Location'
+      responses:
+        '200':
+          description: A paged list of adoptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdoptionList'
+              examples:
+                pendingAdoptions:
+                  summary: Example of pending adoptions
+                  value:
+                    adoptions:
+                      - id: "123e4567-e89b-12d3-a456-426614174000"
+                        petId: "123e4567-e89b-12d3-a456-426614174001"
+                        status: "pending"
+                        location: "New York"
+                    page: 1
+                    limit: 10
+                    total: 1
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/Unauthorized'
+        '422':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ValidationError'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+    post:
+      summary: Adopt an available pet
+      operationId: adoptPet
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdoptPetRequest'
+            examples:
+              validAdoption:
+                summary: Valid adoption request
+                value:
+                  petId: "123e4567-e89b-12d3-a456-426614174001"
+      responses:
+        '201':
+          description: Adoption registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Adoption'
+              examples:
+                successfulAdoption:
+                  summary: Successful adoption response
+                  value:
+                    id: "123e4567-e89b-12d3-a456-426614174000"
+                    petId: "123e4567-e89b-12d3-a456-426614174001"
+                    status: "adopted"
+                    location: "New York"
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/Unauthorized'
+        '404':
+          description: Pet not found
+          content:
+            application/json:
+              schema:
+                $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/schemas/ProblemDetails'
+              examples:
+                petNotFound:
+                  summary: Pet not found example
+                  value:
+                    type: "https://example.com/probs/pet-not-found"
+                    title: "Pet Not Found"
+                    status: 404
+                    detail: "The pet with the given ID was not found."
+        '422':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ValidationError'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/smartbear-public/ProblemDetails/1.0.0#/components/responses/ServerError'
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number for pagination
+      required: false
+      schema:
+        type: integer
+        example: 1
+    Limit:
+      name: limit
+      in: query
+      description: Number of items per page
+      required: false
+      schema:
+        type: integer
+        example: 10
+    Status:
+      name: status
+      in: query
+      description: Filter adoptions by status
+      required: false
+      schema:
+        type: string
+        enum: [requested, pending, available, denied, approved]
+        example: pending
+    Location:
+      name: location
+      in: query
+      description: Filter adoptions by location
+      required: false
+      schema:
+        type: string
+        example: "New York"
+  schemas:
+    AdoptionList:
+      type: object
+      properties:
+        adoptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Adoption'
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the adoption
+        petId:
+          type: string
+          format: uuid
+          description: Unique identifier for the pet
+        status:
+          type: string
+          enum: [requested, pending, available, denied, approved, adopted]
+          description: Status of the adoption
+        location:
+          type: string
+          description: Location of the adoption
+    AdoptPetRequest:
+      type: object
+      required:
+        - petId
+      properties:
+        petId:
+          type: string
+          format: uuid
+          description: Unique identifier for the pet to be adopted
